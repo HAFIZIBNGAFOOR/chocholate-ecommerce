@@ -20,7 +20,7 @@ export const connectMongo = async () => {
   await mongoose
     .connect(mongoUri, config)
     .then((db: any) => {
-      console.log('📗 Connected to Sponsors Boost DB');
+      console.log('📗 Connected to Chocolate E-commerce DB');
     })
     .catch((err: any) => {
       console.log(err);
