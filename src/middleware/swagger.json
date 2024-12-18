@@ -1,0 +1,3165 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "SPONSERS BOOST",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/api/admin/auth/login": {
+      "put": {
+        "summary": "Login to the application",
+        "tags": ["Admin"],
+        "description": "Authenticate a admin and generate a token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": true
+                    },
+                    "accesToken": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/auth/logout": {
+      "put": {
+        "summary": "Logout the application",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Logout admin and deleting the refresh token.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/auth/password/forgot": {
+      "post": {
+        "summary": "Forgot Password",
+        "tags": ["Admin"],
+        "description": "Admin will get reset link in mail.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email Sent Successfully"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/auth/password/reset": {
+      "put": {
+        "summary": "Reset password API",
+        "tags": ["Admin"],
+        "description": "Authenticate a admin with token and create a new password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string"
+                  },
+                  "tokenId": {
+                    "type": "string"
+                  }
+                },
+                "required": ["password", "tokenId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password Changed successfully"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/auth/refresh": {
+      "post": {
+        "summary": "Generate a new Token",
+        "tags": ["Admin"],
+        "description": "Creating a new access Token and refresh Token using the refresh token in the database",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                },
+                "required": ["refreshToken"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accesToken": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/club/members/{memberId}": {
+      "get": {
+        "summary": "Retrieve Club Members",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Retrieve a list of members belonging to member by providing a valid memberId in the URL parameter.",
+        "parameters": [
+          {
+            "name": "memberId",
+            "in": "path",
+            "description": "The unique identifier of the memberId for which you want to retrieve members.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of club members."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "post": {
+        "summary": "create Club Member",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Allows the create of  club member's details. Use this endpoint to modify the specified club member's information, such as their name, image URL, hometown, grade, and major.",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the club to be create."
+            },
+            "description": "The ID of the club  to be create."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The email id of the club member."
+                  },
+                  "clubMemberName": {
+                    "type": "string",
+                    "description": "Name of the club member."
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URL of an image associated with the club member."
+                  },
+                  "hometown": {
+                    "type": "string",
+                    "description": "Hometown of the club member."
+                  },
+                  "grade": {
+                    "type": "string",
+                    "description": "Grade or year of study of the club member."
+                  },
+                  "major": {
+                    "type": "string",
+                    "description": "Major or field of study of the club member."
+                  },
+                  "personalTestResultUrl": {
+                    "type": "string",
+                    "description": "personal Test ResultUrl."
+                  }
+                },
+                "required": [
+                  "email",
+                  "clubMemberName",
+                  "imageUrl",
+                  "hometown",
+                  "grade",
+                  "major",
+                  "personalTestResultUrl"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation. The club member's details have been updated."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/club/{clubId}/members": {
+      "get": {
+        "summary": "Retrieve Club Members",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Retrieve a list of members belonging to a club by providing a valid club ID in the URL parameter.",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "description": "The unique identifier of the club for which you want to retrieve members.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of club members."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "post": {
+        "summary": "create Club Member",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Allows the create of  club member's details. Use this endpoint to modify the specified club member's information, such as their name, image URL, hometown, grade, and major.",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the club to be create."
+            },
+            "description": "The ID of the club  to be create."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The email id of the club member."
+                  },
+                  "clubMemberName": {
+                    "type": "string",
+                    "description": "Name of the club member."
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URL of an image associated with the club member."
+                  },
+                  "hometown": {
+                    "type": "string",
+                    "description": "Hometown of the club member."
+                  },
+                  "grade": {
+                    "type": "string",
+                    "description": "Grade or year of study of the club member."
+                  },
+                  "major": {
+                    "type": "string",
+                    "description": "Major or field of study of the club member."
+                  },
+                  "personalTestResultUrl": {
+                    "type": "string",
+                    "description": "personal Test ResultUrl."
+                  }
+                },
+                "required": [
+                  "email",
+                  "clubMemberName",
+                  "imageUrl",
+                  "hometown",
+                  "grade",
+                  "major",
+                  "personalTestResultUrl"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation. The club member's details have been updated."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/club/{clubId}/members/{memberId}": {
+      "put": {
+        "summary": "Update Club Member",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Allows the update of an existing club member's details. Use this endpoint to modify the specified club member's information, such as their name, image URL, hometown, grade, and major.",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the club  to be updated."
+            },
+            "description": "The ID of the club  to be updated."
+          },
+          {
+            "name": "memberId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the club member  to be updated."
+            },
+            "description": "The ID of the club member  to be updated."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Email ID of the User."
+                  },
+                  "clubMemberName": {
+                    "type": "string",
+                    "description": "Name of the club member."
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URL of an image associated with the club member."
+                  },
+                  "hometown": {
+                    "type": "string",
+                    "description": "Hometown of the club member."
+                  },
+                  "grade": {
+                    "type": "string",
+                    "description": "Grade or year of study of the club member."
+                  },
+                  "major": {
+                    "type": "string",
+                    "description": "Major or field of study of the club member."
+                  },
+                  "personalTestResultUrl": {
+                    "type": "string",
+                    "description": "personalTestResultUrl of study of the club member."
+                  }
+                },
+                "required": [
+                  "email",
+                  "clubMemberName",
+                  "imageUrl",
+                  "hometown",
+                  "grade",
+                  "major",
+                  "personalTestResultUrl"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation. The club member's details have been updated."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Club Member",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Allows the removal of an existing club member. Use this endpoint to delete a club member based on their unique member ID.",
+        "parameters": [
+          {
+            "name": "memberId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the club member to be deleted."
+            },
+            "description": "The ID of the club member to be deleted."
+          },
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the club to be deleted."
+            },
+            "description": "The ID of the club  to be deleted."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation. The club member has been deleted."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "404": {
+            "description": "Not Found. The specified club member was not found."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/club/": {
+      "get": {
+        "summary": "Retrieve All Clubs",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Retrieve a list of all available clubs along with detailed information for each club, including the number of members and sponsors.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of clubs to retrieve per request.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The number of clubs to skip before starting to return clubs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of the list of all clubs."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a New Club",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Create a new club with the provided details, including the university to which it belongs, club name, image URL, social media links, and category.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The email id of the club Admin."
+                  },
+                  "universityId": {
+                    "type": "string",
+                    "description": "ID of the university to which the club belongs."
+                  },
+                  "clubName": {
+                    "type": "string",
+                    "description": "The name of the club."
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "The URL of the club's image."
+                  },
+
+                  "website": {
+                    "type": "string",
+                    "description": "The club's website URL."
+                  },
+
+                  "category": {
+                    "type": "string",
+                    "description": "The category or type of the club."
+                  }
+                },
+                "required": ["email", "universityId", "clubName", "imageUrl", "category", "website"]
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Club successfully created."
+            },
+            "401": {
+              "description": "Unauthorized. Authentication failed."
+            },
+            "409": {
+              "description": "Conflict error."
+            },
+            "400": {
+              "description": "Bad Request. The request is malformed or missing required fields."
+            },
+            "500": {
+              "description": "Internal Server Error. An unexpected error occurred on the server."
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Club successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accesToken": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/club/{clubId}/profile": {
+      "get": {
+        "summary": "Retrieve Club Profile",
+        "tags": ["Admin"],
+
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the club  to be updated."
+            },
+            "description": "The ID of the club  to be updated."
+          }
+        ],
+        "description": "This endpoint allows you to retrieve club profile information. It provides details about the club, its members, and related data.",
+        "responses": {
+          "200": {
+            "description": "Successful operation. Sponsor existence checked, and a sponsor added if none exists."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Club Profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the club  to be updated."
+            },
+            "description": "The ID of the club  to be updated."
+          }
+        ],
+        "description": "Use this endpoint to update club profile information. You can modify details such as the club's name, description, and other relevant information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "clubName": {
+                    "type": "string",
+                    "description": "Name of the club."
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URL of an image associated with the club."
+                  },
+                  "website": {
+                    "type": "string",
+                    "description": "Website URL of the club."
+                  },
+
+                  "category": {
+                    "type": "string",
+                    "description": "Category or type of the club."
+                  }
+                },
+                "required": ["clubName", "imageUrl", "website", "twitter", "instagram", "category"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation. Club profile updated."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+
+    "/api/admin/companies/": {
+      "get": {
+        "summary": "Retrieve Club-Related Companies",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+
+        "tags": ["Admin"],
+
+        "description": "This endpoint allows you to retrieve a list of companies associated with the club. It provides information about these companies, including their details and related data.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of clubs to retrieve per request.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The number of clubs to skip before starting to return clubs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. The list of club-related companies has been retrieved."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+
+    "/api/admin/companies/{companyId}/profile/": {
+      "get": {
+        "summary": "get Company Profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the company to be updated."
+            },
+            "description": "The ID of the company to be updated."
+          }
+        ],
+        "description": "get the company's profile information",
+
+        "responses": {
+          "200": {
+            "description": "Successful update companies"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Company Profile",
+        "tags": ["Admin"],
+
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the company to be updated."
+            },
+            "description": "The ID of the company to be updated."
+          }
+        ],
+        "description": "Update the company's profile information, including details such as company name, logo URL, address, province, city, industry, website, and public status.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "companyName": {
+                    "type": "string",
+                    "description": "The name of the company."
+                  },
+                  "logoUrl": {
+                    "type": "string",
+                    "description": "The URL of the company's logo image."
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "The company's address."
+                  },
+                  "province": {
+                    "type": "string",
+                    "description": "The province where the company is located."
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "The city where the company is located."
+                  },
+                  "industry": {
+                    "type": "string",
+                    "description": "The industry to which the company belongs."
+                  },
+                  "website": {
+                    "type": "string",
+                    "description": "The company's website URL."
+                  },
+                  "isPublic": {
+                    "type": "boolean",
+                    "description": "A boolean flag indicating whether the company's profile is public."
+                  }
+                },
+                "required": ["companyName", "logoUrl", "address", "province", "city", "industry", "website", "isPublic"]
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful update of the company's profile."
+            },
+            "401": {
+              "description": "Unauthorized. Authentication failed."
+            },
+            "409": {
+              "description": "Conflict error."
+            },
+            "400": {
+              "description": "Bad Request. The request is malformed or missing required fields."
+            },
+            "500": {
+              "description": "Internal Server Error. An unexpected error occurred on the server."
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/universities/getAll": {
+      "get": {
+        "summary": "Retrieve University Information All Without limit",
+        "tags": ["Admin"],
+
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Retrieve detailed information about a university, including its sponsorship opportunities, members, and other relevant data.",
+
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of the university's information."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+
+    "/api/admin/universities/": {
+      "get": {
+        "summary": "Retrieve University Information",
+        "tags": ["Admin"],
+
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Retrieve detailed information about a university, including its sponsorship opportunities, members, and other relevant data.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of clubs to retrieve per request.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The number of clubs to skip before starting to return clubs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of the university's information."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "post": {
+        "summary": "create University Information",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Create the a university, including details such as university name, logo URL, address, province, city, website, university type, and public status.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "universityName": {
+                    "type": "string",
+                    "description": "The name of the university."
+                  },
+                  "logoUrl": {
+                    "type": "string",
+                    "description": "The URL of the university's logo image."
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "The university's address."
+                  },
+                  "province": {
+                    "type": "string",
+                    "description": "The province where the university is located."
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "The city where the university is located."
+                  },
+                  "website": {
+                    "type": "string",
+                    "description": "The university's website URL."
+                  },
+                  "universityType": {
+                    "type": "string",
+                    "description": "The type or category of the university."
+                  }
+                },
+                "required": [
+                  "universityName",
+                  "logoUrl",
+                  "address",
+                  "province",
+                  "city",
+                  "website",
+                  "universityType",
+                  "isPublic"
+                ]
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful update of the university's information."
+            },
+            "401": {
+              "description": "Unauthorized. Authentication failed."
+            },
+            "409": {
+              "description": "Conflict error."
+            },
+            "400": {
+              "description": "Bad Request. The request is malformed or missing required fields."
+            },
+            "500": {
+              "description": "Internal Server Error. An unexpected error occurred on the server."
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "create unversity successfully"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+
+    "/api/admin/universities/{universityId}": {
+      "get": {
+        "summary": "get University By Id Details",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Allows updating the details of an existing university. Use this endpoint to modify the specified university's information, such as its name, address, province, city, website, logo URL, and university type.",
+        "parameters": [
+          {
+            "name": "universityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the university to be updated."
+            },
+            "description": "The ID of the university to be updated."
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "successfully update universities information"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update University Details",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Allows updating the details of an existing university. Use this endpoint to modify the specified university's information, such as its name, address, province, city, website, logo URL, and university type.",
+        "parameters": [
+          {
+            "name": "universityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the university to be updated."
+            },
+            "description": "The ID of the university to be updated."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "universityName": {
+                    "type": "string",
+                    "description": "The name of the university."
+                  },
+                  "logoUrl": {
+                    "type": "string",
+                    "description": "The URL of the university's logo image."
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "The university's address."
+                  },
+                  "province": {
+                    "type": "string",
+                    "description": "The province where the university is located."
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "The city where the university is located."
+                  },
+                  "website": {
+                    "type": "string",
+                    "description": "The university's website URL."
+                  },
+                  "universityType": {
+                    "type": "string",
+                    "description": "The type or category of the university."
+                  }
+                },
+                "required": ["universityName", "logoUrl", "address", "province", "city", "website", "universityType"]
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful update of the university's details."
+            },
+            "401": {
+              "description": "Unauthorized. Authentication failed."
+            },
+            "404": {
+              "description": "Not Found. The specified university was not found."
+            },
+            "409": {
+              "description": "Conflict error."
+            },
+            "400": {
+              "description": "Bad Request. The request is malformed or missing required fields."
+            },
+            "500": {
+              "description": "Internal Server Error. An unexpected error occurred on the server."
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successfully update universities information"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete University",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Admin"],
+        "description": "Allows the removal of an existing university. Use this endpoint to delete a university based on its unique ID.",
+        "parameters": [
+          {
+            "name": "universityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the university to be deleted."
+            },
+            "description": "The ID of the university to be deleted."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation. The university has been deleted."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "404": {
+            "description": "Not Found. The specified university was not found."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/members/": {
+      "tags": ["Super Admin"],
+      "get": {
+        "summary": "Retrieve Members",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Super Admin"],
+        "description": "Retrieve a list of members. This includes information about each member, such as their name, role, and contact details.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of clubs to retrieve per request.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The number of clubs to skip before starting to return clubs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of members."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "post": {
+        "summary": "create Member Information",
+
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Super Admin"],
+        "description": "Create or update member information, including login credentials for administrative access.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The login ID for administrative access."
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The password for administrative access."
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful update of the member's information."
+            },
+            "401": {
+              "description": "Unauthorized. Authentication failed."
+            },
+            "409": {
+              "description": "Conflict error."
+            },
+            "400": {
+              "description": "Bad Request. The request is malformed or missing required fields."
+            },
+            "500": {
+              "description": "Internal Server Error. An unexpected error occurred on the server."
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful create of admin."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/admin/members/{adminid}": {
+      "put": {
+        "summary": "Update Admin Details",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Super Admin"],
+        "description": "Allows updating the details of an existing admin. Use this endpoint to modify the specified admin's information, such as login credentials and admin type.",
+        "parameters": [
+          {
+            "name": "adminid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the admin to be updated."
+            },
+            "description": "The ID of the admin to be updated."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The login ID for administrative access."
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The password for administrative access."
+                  },
+                  "adminType": {
+                    "type": "string",
+                    "description": "The type of admin (e.g., superAdmin, general)."
+                  }
+                },
+                "required": ["email", "password", "adminType"]
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful update of the admin's details."
+            },
+            "401": {
+              "description": "Unauthorized. Authentication failed."
+            },
+            "404": {
+              "description": "Not Found. The specified admin was not found."
+            },
+            "409": {
+              "description": "Conflict error."
+            },
+            "400": {
+              "description": "Bad Request. The request is malformed or missing required fields."
+            },
+            "500": {
+              "description": "Internal Server Error. An unexpected error occurred on the server."
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful update admin"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Admin",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Super Admin"],
+        "description": "Allows the removal of an existing admin. Use this endpoint to delete an admin based on its unique ID.",
+        "parameters": [
+          {
+            "name": "adminid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the admin to be deleted."
+            },
+            "description": "The ID of the admin to be deleted."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation. The admin has been deleted."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "404": {
+            "description": "Not Found. The specified admin was not found."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/user/auth/login": {
+      "put": {
+        "summary": "Login to the application",
+        "tags": ["User"],
+        "description": "Authenticate a user and generate a token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "userType": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "password", "userType"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login Successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "accesToken": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/user/auth/logout": {
+      "put": {
+        "summary": "Logout the application",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["User"],
+        "description": "Logout user and deleting the refresh token.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/user/auth/password/forgot": {
+      "put": {
+        "summary": "Forgot Password",
+        "tags": ["User"],
+        "description": "User will get reset link in mail.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "userType": {
+                    "type": "string"
+                  }
+                },
+                "required": ["email", "userType"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email Sent Successfully"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/user/auth/password/reset": {
+      "put": {
+        "summary": "Reset password API",
+        "tags": ["User"],
+        "description": "Authenticate a with token and create a new password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string"
+                  },
+                  "tokenId": {
+                    "type": "string"
+                  }
+                },
+                "required": ["password", "tokenId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password Changed successfully"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/user/profile/password": {
+      "put": {
+        "summary": "Update password API",
+        "tags": ["User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Authenticate a with token and create a new password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentPassword": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string"
+                  }
+                },
+                "required": ["newPassword", "currentPassword"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password Changed successfully"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/user/auth/refresh": {
+      "post": {
+        "summary": "Generate a new Token",
+        "tags": ["User"],
+        "description": "Creating a new access Token and refresh Token using the refresh token in the database",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                },
+                "required": ["refreshToken"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accesToken": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/user/messages/": {
+      "get": {
+        "summary": "Get Discussions",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["User"],
+        "description": "This endpoint allows you to retrieve discussions and messages between users. It provides details about the discussions, including sender, receiver, and message content.",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "description": "Offset for pagination."
+            },
+            "description": "The offset for pagination. Default is 0."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. Discussions retrieved."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Discussion",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["User"],
+        "description": "Use this endpoint to create a new discussion and send messages between users. Provide the message content, sender, and receiver information to initiate a discussion.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userType": {
+                    "type": "string",
+                    "description": "Type of user sending the message."
+                  },
+                  "receiver": {
+                    "type": "string",
+                    "description": "Receiver's information."
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Content of the message."
+                  }
+                },
+                "required": ["type", "receiver", "message"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation. Discussion created."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/user/messages/{discussionId}": {
+      "get": {
+        "summary": "Get Discussion by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["User"],
+        "description": "This endpoint allows you to retrieve a specific discussion and its messages based on the provided discussion ID. It provides details about the sender, receiver, and message content.",
+        "parameters": [
+          {
+            "name": "discussionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the discussion to be retrieved."
+            },
+            "description": "The ID of the discussion to be retrieved."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "description": "Offset for pagination."
+            },
+            "description": "The offset for pagination. Default is 0."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. Discussion retrieved."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/company/auth/register": {
+      "post": {
+        "summary": "Register a New Company",
+        "tags": ["Company"],
+        "description": "Create a new company registration request for sponsorship opportunities.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the name.",
+                    "example": "foobar"
+                  },
+                  "phoneNo": {
+                    "type": "string",
+                    "description": "The name of the phoneNo.",
+                    "example": "foobar"
+                  },
+                  "logoUrl": {
+                    "type": "string",
+                    "description": "The name of the logoUrl.",
+                    "example": "foobar"
+                  },
+                  "promotion": {
+                    "type": "string",
+                    "description": "The name of the promotion.",
+                    "example": "foobar"
+                  },
+                  "isPublic": {
+                    "type": "boolean",
+                    "description": "The name of the isPublic.",
+                    "example": "foobar"
+                  },
+                  "numOfEmployees": {
+                    "type": "string",
+                    "description": "The name of the numOfEmployees.",
+                    "example": "foobar"
+                  },
+
+                  "password": {
+                    "type": "string",
+                    "description": "The password for company authentication. It should meet the following criteria:\n\n- At least one lowercase letter (a-z).\n- At least one uppercase letter (A-Z).\n- At least one digit (0-9).\n- At least one special character among !@#$%^&*()-__+.\n- A minimum length of 8 characters."
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "The company's address."
+                  },
+                  "tokenId": {
+                    "type": "string",
+                    "description": "The token ID for authentication."
+                  },
+                  "province": {
+                    "type": "string",
+                    "description": "The province where the company is located."
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "The city where the company is located."
+                  },
+                  "industry": {
+                    "type": "string",
+                    "description": "The industry to which the company belongs."
+                  }
+                },
+                "required": [
+                  "tokenId",
+                  "password",
+                  "logoUrl",
+                  "address",
+                  "isPublic",
+                  "numOfEmployees",
+                  "name",
+                  "province",
+                  "city",
+                  "address",
+                  "promotion",
+                  "phoneNo",
+                  "industry"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful registration. The company has been registered for sponsorship opportunities."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error. The company registration request conflicts with an existing registration."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/company/auth/verify/email/{tokenId}": {
+      "get": {
+        "summary": "Email Verification after Registration",
+        "tags": ["Company"],
+        "description": "Verify the email using the provided url.",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "in": "path",
+            "description": "The token ID for authentication.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/company/auth/verify/email": {
+      "post": {
+        "summary": "Email Verification",
+        "tags": ["Company"],
+        "description": "To Send the comapany verification Mail.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Enter the Email."
+                  }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error. The company registration request conflicts with an existing registration."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/company/club/{clubId}/members": {
+      "get": {
+        "summary": "Retrieve Club Members",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Company"],
+        "description": "Retrieve a list of members belonging to a club by providing a valid club ID in the URL parameter.",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "description": "The unique identifier of the club for which you want to retrieve members.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of club members."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/company/club/{clubId}": {
+      "get": {
+        "summary": "Retrieve Club Information",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Company"],
+        "description": "Retrieve detailed information about a club, including the number of members and sponsors, by providing a valid club ID in the URL parameter.",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "description": "The unique identifier of the club for which you want to retrieve information.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of club information."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/company/club/": {
+      "get": {
+        "summary": "Retrieve All Clubs",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Company"],
+        "description": "Retrieve a list of all available clubs along with detailed information for each club, including the number of members and sponsors.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of clubs to retrieve per request.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The number of clubs to skip before starting to return clubs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of the list of all clubs."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/company/club/{clubId}/offer": {
+      "post": {
+        "summary": "Check Sponsor Existence and Add Sponsor",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Company"],
+        "description": "Check if a sponsor exists for the specified club (identified by 'clubId'). If no sponsor exists, add a new sponsor to the club.",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "description": "The unique identifier of the club to check and potentially add a sponsor to.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. Sponsor existence checked, and a sponsor added if none exists."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/company/profile/": {
+      "tags": ["Company"],
+      "get": {
+        "summary": "Retrieve Company Profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Company"],
+        "description": "Retrieve detailed information about the company's profile, including its sponsorship opportunities, members, and other relevant data.",
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of the company's profile."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Company Profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Company"],
+        "description": "Update the company's profile information, including details such as company name, logo URL, address, province, city, industry, website, and public status.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "companyName": {
+                    "type": "string",
+                    "description": "The name of the company."
+                  },
+                  "logoUrl": {
+                    "type": "string",
+                    "description": "The URL of the company's logo image."
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "The company's address."
+                  },
+                  "province": {
+                    "type": "string",
+                    "description": "The province where the company is located."
+                  },
+                  "numOfEmployees": {
+                    "type": "string",
+                    "description": "The numOfEmployees no of employer of company ."
+                  },
+                  "promotion": {
+                    "type": "string",
+                    "description": "The province where the company is located."
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "The city where the company is located."
+                  },
+                  "industry": {
+                    "type": "string",
+                    "description": "The industry to which the company belongs."
+                  },
+                  "website": {
+                    "type": "string",
+                    "description": "The company's website URL."
+                  },
+                  "isPublic": {
+                    "type": "boolean",
+                    "description": "A boolean flag indicating whether the company's profile is public."
+                  }
+                },
+                "required": [
+                  "companyName",
+                  "logoUrl",
+                  "address",
+                  "province",
+                  "city",
+                  "numOfEmployees",
+                  "industry",
+                  "website",
+                  "isPublic"
+                ]
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful update of the company's profile."
+            },
+            "401": {
+              "description": "Unauthorized. Authentication failed."
+            },
+            "409": {
+              "description": "Conflict error."
+            },
+            "400": {
+              "description": "Bad Request. The request is malformed or missing required fields."
+            },
+            "500": {
+              "description": "Internal Server Error. An unexpected error occurred on the server."
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of club information."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/company/profile/quit": {
+      "post": {
+        "summary": "Quit Company",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Company"],
+        "description": "Allows a user to quit the company. The user's association with the company is terminated, and the 'deletedAt' timestamp is updated to indicate when the user left the company.",
+        "responses": {
+          "200": {
+            "description": "Successful operation. Sponsor existence checked, and a sponsor added if none exists."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/club/profile": {
+      "get": {
+        "summary": "Retrieve Club Profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club"],
+        "description": "This endpoint allows you to retrieve club profile information. It provides details about the club, its members, and related data.",
+        "responses": {
+          "200": {
+            "description": "Successful operation. Sponsor existence checked, and a sponsor added if none exists."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Club Profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club"],
+        "description": "Use this endpoint to update club profile information. You can modify details such as the club's name, description, and other relevant information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "clubName": {
+                    "type": "string",
+                    "description": "Name of the club."
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URL of an image associated with the club."
+                  },
+                  "website": {
+                    "type": "string",
+                    "description": "Website URL of the club."
+                  },
+                  "twitter": {
+                    "type": "string",
+                    "description": "Twitter handle of the club."
+                  },
+                  "instagram": {
+                    "type": "string",
+                    "description": "Instagram handle of the club."
+                  },
+                  "category": {
+                    "type": "string",
+                    "description": "Category or type of the club."
+                  }
+                },
+                "required": ["clubName", "imageUrl", "website", "twitter", "instagram", "category"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation. Club profile updated."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/club/profile/promo": {
+      "put": {
+        "summary": "Update Club Promo",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club"],
+        "description": "This endpoint enables you to update the promotional materials and information for a club. It allows you to make changes to promotional content, banners, and other related data.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Name of the title."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "description of promo"
+                  },
+                  "imageUrls": {
+                    "type": "string",
+                    "description": "imageUrls club"
+                  }
+                },
+                "required": ["title", "description", "imageUrls"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation. Sponsor existence checked, and a sponsor added if none exists."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/club/profile/quit": {
+      "post": {
+        "summary": "Quit Club Membership",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club"],
+        "description": "By using this endpoint, users can voluntarily terminate their membership with the club. Their association with the club will be ended, and the 'deletedAt' timestamp will be updated to indicate when the user left the club.",
+        "responses": {
+          "200": {
+            "description": "Successful operation. Sponsor existence checked, and a sponsor added if none exists."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/club/company": {
+      "get": {
+        "summary": "Retrieve Club-Related Companies",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club"],
+        "description": "This endpoint allows you to retrieve a list of companies associated with the club. It provides information about these companies, including their details and related data.",
+        "responses": {
+          "200": {
+            "description": "Successful operation. The list of club-related companies has been retrieved."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/club/member": {
+      "get": {
+        "summary": "Retrieve Club Members",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club"],
+        "description": "This endpoint allows you to retrieve a list of club members. It provides information about club members, including their names, profiles, and other relevant details.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of clubs to retrieve per request.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "The number of clubs to skip before starting to return clubs.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. The list of club members has been retrieved."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "post": {
+        "summary": "Add Club Member",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club"],
+        "description": "Allows the addition of a new member to the club. Use this endpoint to add a new club member with the specified details. The member's association with the club will be established, and the relevant information will be updated.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The email id of the club Admin."
+                  },
+                  "clubId": {
+                    "type": "string",
+                    "description": "ID of the club to which the member is being added."
+                  },
+                  "clubMemberName": {
+                    "type": "string",
+                    "description": "Name of the new club member."
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URL of an image associated with the new club member."
+                  },
+                  "hometown": {
+                    "type": "string",
+                    "description": "Hometown of the new club member."
+                  },
+                  "grade": {
+                    "type": "string",
+                    "description": "Grade or year of study of the new club member."
+                  },
+                  "major": {
+                    "type": "string",
+                    "description": "Major or field of study of the new club member."
+                  }
+                },
+                "required": ["email", "clubId", "clubMemberName", "imageUrl", "hometown", "grade", "major"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation. The new club member has been added."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/club/member/{memberId}": {
+      "put": {
+        "summary": "Update Club Member",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club"],
+        "description": "Allows the update of an existing club member's details. Use this endpoint to modify the specified club member's information, such as their name, image URL, hometown, grade, and major.",
+        "parameters": [
+          {
+            "name": "memberId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the club member to be updated."
+            },
+            "description": "The ID of the club member to be updated."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "clubId": {
+                    "type": "string",
+                    "description": "ID of the club to which the member belongs."
+                  },
+                  "clubMemberName": {
+                    "type": "string",
+                    "description": "Name of the club member."
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "description": "URL of an image associated with the club member."
+                  },
+                  "hometown": {
+                    "type": "string",
+                    "description": "Hometown of the club member."
+                  },
+                  "grade": {
+                    "type": "string",
+                    "description": "Grade or year of study of the club member."
+                  },
+                  "major": {
+                    "type": "string",
+                    "description": "Major or field of study of the club member."
+                  },
+                  "personalTestResultUrl": {
+                    "type": "string",
+                    "description": "Major or field of study of the club member."
+                  }
+                },
+                "required": [
+                  "clubId",
+                  "clubMemberName",
+                  "imageUrl",
+                  "hometown",
+                  "grade",
+                  "major",
+                  "personalTestResultUrl"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation. The club member's details have been updated."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Club Member",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club"],
+        "description": "Allows the removal of an existing club member. Use this endpoint to delete a club member based on their unique member ID.",
+        "parameters": [
+          {
+            "name": "memberId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ID of the club member to be deleted."
+            },
+            "description": "The ID of the club member to be deleted."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation. The club member has been deleted."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "404": {
+            "description": "Not Found. The specified club member was not found."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    },
+    "/api/clubMember/member/profile": {
+      "get": {
+        "summary": "Get Club Member Profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club Member"],
+        "description": "This endpoint allows you to retrieve the profile information of the club member, including details such as their name, image, hometown, grade, major, and personal test results.",
+        "responses": {
+          "200": {
+            "description": "Successful operation. Club member profile retrieved."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Club Member Profile",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["Club Member"],
+        "description": "Use this endpoint to update the profile information of the club member, including details such as their name, image, hometown, grade, major, and personal test results.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Name of the promo title."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "promo description"
+                  },
+                  "imageUrls": {
+                    "type": "string",
+                    "description": "imageUrl promo"
+                  }
+                },
+                "required": ["title", "description", "imageUrls"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation. Club member profile updated."
+          },
+          "401": {
+            "description": "Unauthorized. Authentication failed."
+          },
+          "409": {
+            "description": "Conflict error."
+          },
+          "400": {
+            "description": "Bad Request. The request is malformed or missing required fields."
+          },
+          "500": {
+            "description": "Internal Server Error. An unexpected error occurred on the server."
+          }
+        }
+      }
+    }
+  }
+}

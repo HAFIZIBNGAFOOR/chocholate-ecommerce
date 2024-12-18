@@ -1,0 +1,9 @@
+export const ERROR = "Error";
+export const VALIDATION = "Invalid format";
+export const UNAUTH = "Unauthorized";
+export const CONFLICT = "Conflict";
+export const DATANOTFOUND = "Data not found";
+export const PAGENOTFOUND = "Page not found";
+export const BADIMPLEMENTATION = "Internal Server Error";
+export const DATAEXCEED = "Data is exceeded";
+export const USERNOTACTIVATE = "User is not activated";

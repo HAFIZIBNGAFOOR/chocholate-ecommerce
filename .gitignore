@@ -1,0 +1,15 @@
+# Ignore:
+/dist
+node_modules
+package-lock.json
+
+.env
+.yarn.lock
+yarn.lock
+
+.DS_Store
+
+# test
+
+/coverage
+.env.dev
