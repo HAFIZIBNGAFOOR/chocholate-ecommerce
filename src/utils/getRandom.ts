@@ -4,7 +4,6 @@ export const getRandomId = async (code?: number) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   const num = Math.floor(Math.random() * (max - min + 1)) + min;
-  const result = `${num.toString().padStart(6, '0')}`;
 
-  return result;
+  return num;
 };

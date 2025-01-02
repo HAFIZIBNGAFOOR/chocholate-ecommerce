@@ -13,7 +13,6 @@ import {
 export const LOGIN_SCHEMA: Schema = {
   userType: VALIDATION_USER_TYPE('body'),
   email: VALIDATION_EMAIL_EXIST('body'),
-  password: VALIDATION_PASSWORD_CHECK('body', 'email'),
 };
 
 export const FORGOT_PASSWORD_SCHEMA: Schema = {
