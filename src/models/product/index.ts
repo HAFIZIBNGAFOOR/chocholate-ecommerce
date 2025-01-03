@@ -1,5 +1,5 @@
 import { ClientSession } from 'mongoose';
-import { NewProductDocument } from '../@types';
+import { NewProductDocument, UpdateProductDocument } from '../@types';
 import { Product } from './product.entity';
 
 export const addProduct = async (product: NewProductDocument, session?: ClientSession | null | undefined) => {
@@ -11,3 +11,35 @@ export const addProduct = async (product: NewProductDocument, session?: ClientSe
     return Promise.reject(error);
   }
 };
+
+export const updateProduct = async (
+  id: string,
+  updateDoc: UpdateProductDocument,
+  session?: ClientSession | null | undefined,
+) => {
+  try {
+    await Product.findOneAndUpdate({ id }, { $set: updateDoc }, { session });
+    return Promise.resolve();
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const getProductById = async (productId: string) => {
+  try {
+    const product = await Product.findById(productId);
+    return Promise.resolve(product);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+
+export const getProductsByFilter = async () => {
+    try {
+        const products = await Product.find()
+        return Promise.reject()
+    } catch (error) {
+        return Promise.reject(error)
+    }
+}
