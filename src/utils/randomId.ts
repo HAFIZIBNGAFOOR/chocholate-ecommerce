@@ -15,3 +15,20 @@ export const generatePassword = (RegExp: RegExp) => {
 
   return password;
 };
+
+export const randomNumber = (
+  length: number = 6,
+  charset: 'alphanumeric' | 'alphabetic' | 'numeric' | 'hex' | 'binary' | 'octal',
+) => {
+  let number;
+  do {
+    number = RandomString.generate({
+      length: length,
+      charset: charset,
+    });
+  } while (number.length !== length || number.length < length || number[0] === '0');
+  console.log(length);
+  console.log(number.length);
+  console.log(number);
+  return number;
+};

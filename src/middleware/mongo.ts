@@ -9,9 +9,9 @@ export const mongoUri = `${process.env.DB_PROTOCOL}://${process.env.DB_USER}:${p
 const config = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  // user: process.env.DB_USER,
-  // pass: process.env.DB_PASS,
-  // dbName: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  pass: process.env.DB_PASS,
+  dbName: process.env.DB_NAME,
   ssl: true,
 };
 

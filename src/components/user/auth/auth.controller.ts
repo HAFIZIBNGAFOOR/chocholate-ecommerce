@@ -9,14 +9,37 @@ import {
 } from '../../../utils/apiErrorHandler';
 import { getUserByEmail, getUserByID, updateUserFields } from '../../../models/user';
 import { handleResponse } from '../../../middleware/requestHandle';
+import { deleteOtp } from '../../../models/otp';
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log(req.body);
     const { email } = req.body;
 
     // Call the service
     await service.processLogin(email);
     return handleResponse(res, 200, { success: true, message: 'OTP have send successfully to registered email' });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
+
+export const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, otp } = req.body;
+    const userId = await service.createUser(email);
+    if (!userId) throw Error('1008');
+
+    // Generate access and refresh tokens
+    const { ACCESS_TOKEN_EXPIRED_IN, REFRESH_TOKEN_EXPIRED_IN } = process.env;
+    const accessToken = encodeJwt({ id: userId }, ACCESS_TOKEN_EXPIRED_IN || '1h', 'access');
+    const refreshToken = encodeJwt({ id: userId }, REFRESH_TOKEN_EXPIRED_IN || '30d', 'refresh');
+
+    // Update the user with the new refresh token
+    await updateUserFields(userId, { refreshToken });
+
+    return handleResponse(res, 200, { accessToken, refreshToken });
   } catch (err) {
     console.error(err);
     next(err);

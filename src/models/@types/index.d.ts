@@ -99,3 +99,18 @@ export type NewProductDocument = {
 export type UpdateProductDocument = Partial<NewProductDocument>;
 
 export type ProductDocument = mongoose.Document & NewProductDocument;
+
+export type NewOtpDocument = {
+  otpId: string;
+  userId: string | null;
+  email: string;
+  otp: number;
+  expiredAt: Date;
+};
+
+export type OtpDocument = mongoose.Document & NewOtpDocument;
+
+export type FilePathDocument = {
+  fileName: string;
+  contentType: string;
+};

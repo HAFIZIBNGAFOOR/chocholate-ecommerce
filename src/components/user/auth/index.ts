@@ -1,25 +1,20 @@
 import express from 'express';
 import { checkSchema } from 'express-validator';
 
-import {
-  FORGOT_PASSWORD_SCHEMA,
-  LOGIN_SCHEMA,
-  REFRESH_TOKEN_SCHEMA,
-  RESET_PASSWORD_SCHEMA,
-  UPDATE_PASSWORD_SCHEMA,
-} from './auth.validation';
-
 import * as controller from './auth.controller';
 
 import { checkValidation } from '../../../utils/validation';
 import { isAuthenticated } from '../../../utils/auth';
+import { VERIFY_OTP_SCHEMA } from './auth.validation';
 
-const router = express.Router();
+router.put('/login', checkValidation, controller.login);
 
-router.put('/login', checkSchema(LOGIN_SCHEMA), checkValidation, controller.login);
+router.put('/login', checkValidation, controller.login);
 router.put('/logout', isAuthenticated, controller.logout);
-router.post('/password/forgot', checkSchema(FORGOT_PASSWORD_SCHEMA), checkValidation, controller.forgotPassword);
-router.put('/password/reset', checkSchema(RESET_PASSWORD_SCHEMA), checkValidation, controller.resetPassword);
-router.post('/refresh', checkSchema(REFRESH_TOKEN_SCHEMA), checkValidation, controller.refresh);
+router.post('/verify-otp', checkSchema(VERIFY_OTP_SCHEMA), checkValidation, controller.verifyOtp);
+
+// router.post('/password/forgot', checkSchema(FORGOT_PASSWORD_SCHEMA), checkValidation, controller.forgotPassword);
+// router.put('/password/reset', checkSchema(RESET_PASSWORD_SCHEMA), checkValidation, controller.resetPassword);
+router.post('/refresh', checkValidation, controller.refresh);
 
 export default router;

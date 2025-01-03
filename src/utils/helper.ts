@@ -4,16 +4,12 @@ export const setUser = (user: UserDocument) => {
   return {
     userId: user.userId,
     userType: user.userType,
-    companyId: user.companyId,
-    clubId: user.clubId,
-    clubMemberId: user.clubMemberId,
   };
 };
 
 export const setAdmin = (admin: AdminDocument) => {
   return {
     adminId: admin.adminId,
-    adminType: admin.privilege,
     email: admin.email,
   };
 };

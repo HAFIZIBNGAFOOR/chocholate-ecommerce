@@ -6,7 +6,7 @@ import app from '../app';
 import debug from 'debug';
 import http from 'http';
 debug('backend:server');
-import { SocketInitialize } from '../middleware/socket';
+// import { SocketInitialize } from '../middleware/socket';
 
 /**
  * Get port from environment and store in Express.
@@ -20,7 +20,7 @@ app.set('port', port);
  */
 
 const server = http.createServer(app);
-SocketInitialize(server);
+// SocketInitialize(server);
 
 /**
  * Listen on provided port, on all network interfaces.

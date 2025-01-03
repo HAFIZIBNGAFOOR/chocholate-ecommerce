@@ -24,9 +24,9 @@ export const getUserByID = async (userId: string) => {
 
 export const addUser = async (user: NewUserDocument, session?: ClientSession | null | undefined) => {
   try {
-    const newAdmin = new Users(user);
-    await newAdmin.save({ session });
-    return Promise.resolve();
+    const newUser = new Users(user);
+    await newUser.save({ session });
+    return newUser; // Return the created user document
   } catch (err) {
     return Promise.reject(err);
   }
