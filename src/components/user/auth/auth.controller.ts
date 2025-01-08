@@ -7,24 +7,38 @@ import {
   dataNotExistException,
   unauthorizedException,
 } from '../../../utils/apiErrorHandler';
-import { getUserByEmail, getUserByID, updateUserFields } from '../../../models/user';
+import { getUserByID, updateUserFields } from '../../../models/user';
 import { handleResponse } from '../../../middleware/requestHandle';
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log(req.body);
+    const { email } = req.body;
+    console.log(email);
+    // Call the service
+    await service.processLogin(email);
+    return handleResponse(res, 200, { success: true, message: 'OTP have send successfully to registered email' });
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
 
-    //getUserId in userAuth
-    const { userId } = req.user;
-    //checks whether user exists
-    if (!userId) throw badImplementationException('authorization process has something wrong.');
+export const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, otp } = req.body;
+    const userId = await service.createUser(email);
+    if (!userId) throw Error('1008');
+
+    // Generate access and refresh tokens
     const { ACCESS_TOKEN_EXPIRED_IN, REFRESH_TOKEN_EXPIRED_IN } = process.env;
-
-    //generated accessToken and refreshToken
     const accessToken = encodeJwt({ id: userId }, ACCESS_TOKEN_EXPIRED_IN || '1h', 'access');
     const refreshToken = encodeJwt({ id: userId }, REFRESH_TOKEN_EXPIRED_IN || '30d', 'refresh');
-    //update new refreshToken in userCollection.
+
+    // Update the user with the new refresh token
     await updateUserFields(userId, { refreshToken });
-    return handleResponse(res,200,{accessToken,refreshToken})
+
+    return handleResponse(res, 200, { accessToken, refreshToken });
   } catch (err) {
     console.error(err);
     next(err);
@@ -41,47 +55,7 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
 
     // update refreshToken with null in userCollection.
     await updateUserFields(userId, { refreshToken: null });
-    return handleResponse(res,200,{})
-
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-};
-
-export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-
-    //Get email in body.
-    const { email } = req.body;
-
-    //Get user from users collection.
-    const user = await getUserByEmail(email);
-
-    // Checks whether user exists and user is not deleted.
-    if (!user) throw dataNotExistException('Email does not register');
-    if (user.deletedAt) throw unauthorizedException('This user is deleted.');
-
-    // sends mail with forgot password url in forgotPassword service.
-    await service.forgotPassword(user);
-    return handleResponse(res, 200, {})
-
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-};
-
-export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-
-    //get password and tokenId in body
-    const { password, tokenId } = req.body;
-
-    //resets password using resetpassword service .
-    await service.resetPassword(password, tokenId);
-
-    return handleResponse(res, 200, {})
+    return handleResponse(res, 200, {});
   } catch (err) {
     console.error(err);
     next(err);
@@ -111,7 +85,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
     //Update user Collection with new refresh token.
     await updateUserFields(user.userId, { refreshToken: newRefreshToken });
 
-    return handleResponse(res, 200, {accessToken,refreshToken:newRefreshToken})
+    return handleResponse(res, 200, { accessToken, refreshToken: newRefreshToken });
   } catch (err) {
     console.error(err);
     next(err);

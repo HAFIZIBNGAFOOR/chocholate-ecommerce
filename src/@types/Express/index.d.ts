@@ -2,7 +2,7 @@ declare namespace Express {
   interface Request {
     user: {
       userId?: string;
-      userType?: 'companyAdmin' | 'clubAdmin' | 'clubMember';
+      userType?: 'us' | 'ad';
       companyId?: string | null;
       clubId?: string | null;
       clubMemberId?: string | null;

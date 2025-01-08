@@ -6,62 +6,62 @@ import {
 } from '../../../utils/apiErrorHandler';
 import { v4 as uuidv4 } from 'uuid';
 import { getAddToCurrentJST } from '../../../utils/dayjs';
-import { MESSAGE_RESET_PASSWORD } from './auth.message';
-import { NewTokenDocument, UserDocument } from '../../../models/@types';
-import { addToken, deleteToken, getTokenByID } from '../../../models/token';
-import { updateUserFields } from '../../../models/user';
+import { MESSAGE_SEND_OTP } from './auth.message';
+import { NewOtpDocument, NewTokenDocument, NewUserDocument, UserDocument } from '../../../models/@types';
+// import { addToken, deleteToken, getTokenByID } from '../../../models/token';
+import { updateUserFields, getUserByEmail, addUser } from '../../../models/user';
 import { sendMessage } from '../../../utils/sgMailer';
 import { sentMail } from '../../../utils/nodemailer';
+import { getRandomId } from '../../../utils/getRandom';
+import { generatedId, randomNumber } from '../../../utils/randomId';
+import { addOtp, deleteOtp } from '../../../models/otp';
+import { Users } from '../../../models/user/user.entity';
+import { encodeJwt } from '../../../utils/jwt';
 
-export const forgotPassword = async (user: UserDocument) => {
-  let error: Error | HttpException | undefined;
+export const processLogin = async (email: string) => {
   try {
-    const expiredAt = new Date(getAddToCurrentJST(1, 'h'));
-    const newToken: NewTokenDocument = {
-      tokenId: uuidv4(),
-      userId: user.userId,
-      tokenType: 'passwordReset',
-      email: user.email,
-      userType: user.userType,
-      expiredAt,
+    // Step 2: Create a new user and send OTP
+
+    const otpDoc: NewOtpDocument = {
+      otpId: generatedId(),
+      email,
+      userId: null,
+      otp: Number(randomNumber(6, 'numeric')),
+      expiredAt: new Date(Date.now() + 5 * 60 * 1000),
     };
-    // BUG: token not update proper
-    await addToken(newToken);
-
-    let tokenUrl =
-      user.userType === 'companyAdmin'
-        ? (process.env.FRONTEND_COMPANY_URL as string)
-        : user.userType === 'clubAdmin'
-        ? (process.env.FRONTEND_CLUB_URL as string)
-        : (process.env.FRONTEND_CLUB_MEMBER_URL as string);
-    tokenUrl += '/reset-password/' + newToken.tokenId;
-
-    await sentMail(MESSAGE_RESET_PASSWORD(user.email, tokenUrl));
-
-    return Promise.resolve();
-  } catch (err) {
-    console.error(err);
-    error = err instanceof Error ? err : badImplementationException(err);
-    return Promise.reject(error);
+    await addOtp(otpDoc); // Creates a new user
+    console.log(email, ' email and otp ', otpDoc.otp);
+    await sentMail(MESSAGE_SEND_OTP(email, otpDoc.otp)); // Sends OTP to user's email
+    return true;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Error during login process.');
   }
 };
 
-export const resetPassword = async (password: string, tokenId: string) => {
-  let error: Error | HttpException | undefined;
+export const createUser = async (email: string) => {
   try {
-    const token = await getTokenByID(tokenId);
-    if (!token) throw dataNotExistException('Token does not exist');
-    if (token.tokenType !== 'passwordReset') throw invalidException('Token is not valid token type', 'TSM105');
-    if (!token.userId) throw invalidException('Token is not valid token type', 'TSM105');
+    let user = await getUserByEmail(email);
 
-    await updateUserFields(token.userId, { password });
+    if (!user) {
+      // Create a new user if not exists
+      const userDoc: NewUserDocument = {
+        userId: generatedId(), // Generate a unique ID for the user
+        email,
+        userType: 'us',
+        status: 'active', // Default status
+        username: email.split('@')[0],
+        refreshToken: null,
+        deletedAt: null,
+      };
+      user = await addUser(userDoc);
+    }
 
-    await deleteToken(tokenId);
+    // Clean up OTP after successful verification
+    await deleteOtp(email, 'email');
 
-    return Promise.resolve();
+    return user.userId;
   } catch (err) {
-    console.log(err);
-    error = err instanceof Error ? err : badImplementationException(err);
-    return Promise.reject(error);
+    Promise.reject(err);
   }
 };

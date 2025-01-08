@@ -1,6 +1,6 @@
 import * as ERROR from '../constants/errorMessage';
 import { ValidationError } from 'express-validator';
-import { io } from '../middleware/socket';
+// import { io } from '../middleware/socket';
 
 export class HttpException extends Error {
   statusCode?: number;
@@ -66,9 +66,9 @@ export const badImplementationException = (error: any) => {
   return new HttpException(500, error || ERROR.BADIMPLEMENTATION, '5000');
 };
 
-export const socketErrorHandle = (sessionId: string, message: string, subStatusCode: string) => {
-  return io.of('/api/user/socket').to(sessionId).emit('Error', {
-    message,
-    subStatusCode,
-  }); //  object types message
-};
+// export const socketErrorHandle = (sessionId: string, message: string, subStatusCode: string) => {
+//   return io.of('/api/user/socket').to(sessionId).emit('Error', {
+//     message,
+//     subStatusCode,
+//   }); //  object types message
+// };
