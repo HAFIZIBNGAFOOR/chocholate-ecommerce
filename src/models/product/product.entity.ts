@@ -39,6 +39,17 @@ const ProductSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-ProductSchema.plugin(aggregatePaginate);
+ProductSchema.virtual('discountedPrice').get(function () {
+  const discountFactor = (100 - this.discount) / 100;
+  return this.price * discountFactor;
+});
 
-export const Product = mongoose.model<ProductDocument,mongoose.AggregatePaginateModel<ProductDocument>>('product', ProductSchema,'products');
+// Ensure virtual fields are included in JSON responses
+ProductSchema.set('toJSON', { virtuals: true });
+ProductSchema.set('toObject', { virtuals: true });
+
+export const Product = mongoose.model<ProductDocument, mongoose.AggregatePaginateModel<ProductDocument>>(
+  'product',
+  ProductSchema,
+  'products',
+);

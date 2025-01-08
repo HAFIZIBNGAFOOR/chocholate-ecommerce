@@ -2,15 +2,14 @@ import express from 'express';
 
 import authComponent from './auth';
 import utilsComponent from './utils';
-
-// import profileComponent from './profile';
+import productComponent from './product';
 
 import { isAuthenticated } from '../../utils/auth';
 
 const router = express.Router();
 
 router.use('/auth', authComponent);
-router.use('/utils', utilsComponent);
-// router.use('/profile', isAuthenticated, profileComponent);
+router.use('/utils', isAuthenticated, utilsComponent);
+router.use('/product', isAuthenticated, productComponent);
 
 export default router;

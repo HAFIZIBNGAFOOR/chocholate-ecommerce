@@ -10,7 +10,6 @@ import { SocketData } from '../@types';
 
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // console.log(req.headers)
     const bearer = req.headers['authorization'];
     if (!bearer) throw unauthorizedException('No token provided');
 
@@ -19,6 +18,7 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
 
     const user = await getUserByID(decoded.payload.id);
     if (!user) throw unauthorizedException('User is not exist');
+    if (user.userType!=='us') throw unauthorizedException('1017');
     if (user.status !== 'active' || user.deletedAt !== null) throw new Error('1016');
 
     req.user = setUser(user);

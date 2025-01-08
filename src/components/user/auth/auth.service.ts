@@ -30,6 +30,7 @@ export const processLogin = async (email: string) => {
       expiredAt: new Date(Date.now() + 5 * 60 * 1000),
     };
     await addOtp(otpDoc); // Creates a new user
+    console.log(email, ' email and otp ', otpDoc.otp);
     await sentMail(MESSAGE_SEND_OTP(email, otpDoc.otp)); // Sends OTP to user's email
     return true;
   } catch (error) {

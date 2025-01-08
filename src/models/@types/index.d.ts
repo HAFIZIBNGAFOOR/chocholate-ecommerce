@@ -72,7 +72,7 @@ export type NewProductDocument = {
   description?: string;
   category: string; // e.g., 'Dark Chocolate', 'Milk Chocolate'
   price: number;
-  discountedPrice: number;
+  discountedPrice?: number;
   discount?: number; // percentage discount
   stock: number;
   weight?: string; // e.g., '100g', '250g'
@@ -86,8 +86,8 @@ export type NewProductDocument = {
   images: string[]; // Array of image URLs
   tags?: string[]; // e.g., 'vegan', 'sugar-free'
   brand?: string;
-  isFeatured?: boolean;
-  status?: 'available' | 'out-of-stock' | 'discontinued';
+  isFeatured: boolean;
+  status: 'available' | 'out-of-stock' | 'discontinued';
   ratings?: {
     average?: number;
     count?: number;

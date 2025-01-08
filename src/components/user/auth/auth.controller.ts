@@ -7,15 +7,14 @@ import {
   dataNotExistException,
   unauthorizedException,
 } from '../../../utils/apiErrorHandler';
-import { getUserByEmail, getUserByID, updateUserFields } from '../../../models/user';
+import { getUserByID, updateUserFields } from '../../../models/user';
 import { handleResponse } from '../../../middleware/requestHandle';
-import { deleteOtp } from '../../../models/otp';
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     console.log(req.body);
     const { email } = req.body;
-
+    console.log(email);
     // Call the service
     await service.processLogin(email);
     return handleResponse(res, 200, { success: true, message: 'OTP have send successfully to registered email' });

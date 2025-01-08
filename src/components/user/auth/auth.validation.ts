@@ -1,5 +1,5 @@
 import { Schema } from 'express-validator';
-import { VALIDATION_EMAIL_OTP, VALIDATION_OTP } from '../../../constants/validation';
+import { VALIDATION_EMAIL, VALIDATION_EMAIL_OTP, VALIDATION_OTP } from '../../../constants/validation';
 
 export const VERIFY_OTP_SCHEMA: Schema = {
   email: VALIDATION_EMAIL_OTP('body'),
@@ -21,6 +21,6 @@ export const VERIFY_OTP_SCHEMA: Schema = {
 //   newPassword: VALIDATION_PASSWORD('body', 'user'),
 // };
 
-// export const REFRESH_TOKEN_SCHEMA: Schema = {
-//   refreshToken: VALIDATION_STRING('body'),
-// };
+export const LOGIN_SCHEMA: Schema = {
+  email: VALIDATION_EMAIL('body'),
+};

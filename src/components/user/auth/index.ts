@@ -5,11 +5,10 @@ import * as controller from './auth.controller';
 
 import { checkValidation } from '../../../utils/validation';
 import { isAuthenticated } from '../../../utils/auth';
-import { VERIFY_OTP_SCHEMA } from './auth.validation';
+import { LOGIN_SCHEMA, VERIFY_OTP_SCHEMA } from './auth.validation';
 
-router.put('/login', checkValidation, controller.login);
-
-router.put('/login', checkValidation, controller.login);
+const router = express.Router();
+router.put('/login', checkSchema(LOGIN_SCHEMA), checkValidation, controller.login);
 router.put('/logout', isAuthenticated, controller.logout);
 router.post('/verify-otp', checkSchema(VERIFY_OTP_SCHEMA), checkValidation, controller.verifyOtp);
 

@@ -2,7 +2,7 @@ import { ClientSession } from 'mongoose';
 import { NewProductDocument, UpdateProductDocument } from '../@types';
 import { Product } from './product.entity';
 
-export const addProduct = async (product: NewProductDocument, session?: ClientSession | null | undefined) => {
+export const saveProduct = async (product: NewProductDocument, session?: ClientSession | null | undefined) => {
   try {
     const newProduct = new Product(product);
     await newProduct.save({ session });

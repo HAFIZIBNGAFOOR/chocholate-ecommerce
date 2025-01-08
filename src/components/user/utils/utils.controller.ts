@@ -8,17 +8,18 @@ const BucketFolder = process.env.BUCKET_FOLDER;
 
 export const getSignedUrl = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log(req.body, 'file path ');
     const filePath = req.body.filePath as FilePathDocument[];
     const { userId } = req.user;
 
     if (!userId) throw badImplementationException('authorization process has something wrong.');
     const getSignedUrls = await Promise.all(
       filePath.map(
-          async (item: FilePathDocument): Promise<object> => ({
-              fileName: item.fileName,
-              contentType: item.contentType,
-              filePath: `${BucketFolder}/${userId}/${item.fileName}`,
-              signedUrl: await uploadSignedUrl(userId, item.fileName, item.contentType),
+        async (item: FilePathDocument): Promise<object> => ({
+          fileName: item.fileName,
+          contentType: item.contentType,
+          imgUrl: `https://fixchocolate.s3.${process.env.AWS_REGION}.amazonaws.com/${BucketFolder}/${userId}/${item.fileName}`,
+          signedUrl: await uploadSignedUrl(userId, item.fileName, item.contentType),
         }),
       ),
     );

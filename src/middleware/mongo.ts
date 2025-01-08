@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
-import { Logger } from '../utils/log4';
-
 export const mongoUri = `${process.env.DB_PROTOCOL}://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority`;
-
-// console.log(mongoUri);
 
 const config = {
   useNewUrlParser: true,
