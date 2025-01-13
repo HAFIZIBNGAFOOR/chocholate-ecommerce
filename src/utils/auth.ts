@@ -8,7 +8,7 @@ import { Socket } from 'socket.io';
 import { SocketData } from '../@types';
 // import { io, sendMessages, typingMessage, userStatusBroadCast } from '../middleware/socket';
 
-export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
+export const isUserAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const bearer = req.headers['authorization'];
     if (!bearer) throw unauthorizedException('No token provided');

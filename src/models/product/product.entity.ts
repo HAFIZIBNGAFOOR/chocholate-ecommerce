@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
+import mongoosePaginate from 'mongoose-paginate-v2';
 import { ProductDocument } from '../@types';
 
 const ProductSchema = new mongoose.Schema(
@@ -47,8 +47,9 @@ ProductSchema.virtual('discountedPrice').get(function () {
 // Ensure virtual fields are included in JSON responses
 ProductSchema.set('toJSON', { virtuals: true });
 ProductSchema.set('toObject', { virtuals: true });
+ProductSchema.plugin(mongoosePaginate);
 
-export const Product = mongoose.model<ProductDocument, mongoose.AggregatePaginateModel<ProductDocument>>(
+export const Product = mongoose.model<ProductDocument, mongoose.PaginateModel<ProductDocument>>(
   'product',
   ProductSchema,
   'products',

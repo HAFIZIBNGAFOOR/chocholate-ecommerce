@@ -34,12 +34,19 @@ export const getProductById = async (productId: string) => {
   }
 };
 
-
+export const getProductByName = async (name: string) => {
+  try {
+    const product = await Product.findOne({ name });
+    return Promise.resolve(product);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
 export const getProductsByFilter = async () => {
-    try {
-        const products = await Product.find()
-        return Promise.reject()
-    } catch (error) {
-        return Promise.reject(error)
-    }
-}
+  try {
+    const products = await Product.find();
+    return Promise.reject();
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

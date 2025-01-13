@@ -13,7 +13,7 @@ import { handleResponse } from '../../../middleware/requestHandle';
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     console.log(req.body);
-    const { email } = req.body;
+    const { email, userType } = req.body;
     console.log(email);
     // Call the service
     await service.processLogin(email);
