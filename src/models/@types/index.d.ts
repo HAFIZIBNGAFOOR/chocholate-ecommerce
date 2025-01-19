@@ -114,3 +114,54 @@ export type FilePathDocument = {
   fileName: string;
   contentType: string;
 };
+
+export type NewOrderDocument = {
+  orderId: string; // Unique identifier for the order
+  userId: string; // User who placed the order
+  products: {
+    productId: string; // Product ID
+    name: string; // Product name
+    quantity: number; // Quantity ordered
+    price: number; // Price per unit at the time of order
+    discountedPrice?: number; // Discounted price per unit, if applicable
+    totalItemPrice: number; // Total price for the item (quantity * discountedPrice or price)
+  }[];
+  totalAmount: number; // Total amount for the order (sum of all totalItemPrice)
+  discount?: number; // Overall discount applied to the order, if any
+  finalAmount: number; // Total after applying discount
+  paymentMethod: 'card' | 'cash' | 'wallet'; // Payment method used
+  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'canceled'; // Order status
+  address: {
+    line1: string; // Address line 1
+    line2?: string; // Address line 2
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  createdAt?: Date; // Order creation timestamp
+  updatedAt?: Date; // Order update timestamp
+};
+
+export type UpdateOrderDocument = Partial<NewOrderDocument>;
+
+export type OrderDocument = mongoose.Document & NewOrderDocument;
+
+export type CartItem = {
+  productId: string;
+  quantity: number;
+};
+
+/**
+ * Represents a new cart document.
+ */
+export type NewCartDocument = {
+  userId: string;
+  items: CartItem[]; // Array of cart items
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+export type UpdateCartDocument = Partial<NewCartDocument>;
+
+export type CartDocument = mongoose.Document & NewCartDocument;

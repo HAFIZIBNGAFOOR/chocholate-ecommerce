@@ -1,5 +1,6 @@
 import { ParamSchema, Location } from 'express-validator';
 import { getEmailOtp } from '../models/otp';
+import { getProductById, getProductByName } from '../models/product';
 // import {
 //   EMAIL_MAX_LENGTH,
 //   PASSWORD_MAX_LENGTH,
@@ -164,10 +165,14 @@ export const VALIDATION_NUTRITION_INFO = (where: 'body' | 'query' | 'params', su
   },
 });
 
-export const VALIDATION_RATINGS = (where: 'body' | 'query' | 'params', subStatusCode: string): ParamSchema => ({
+export const VALIDATION_RATINGS = (
+  where: 'body' | 'query' | 'params',
+  subStatusCode: string,
+  checkBy?: 'optional',
+): ParamSchema => ({
   in: [where],
   optional: true,
-  isObject: { errorMessage: subStatusCode },
+  isObject: checkBy === 'optional' ? false : { errorMessage: subStatusCode },
   custom: {
     options: (value) => {
       const { average, count } = value || {};
@@ -224,13 +229,64 @@ export const VALIDATION_ENUM = (
   where: 'body' | 'query' | 'params',
   allowedValues: string[],
   subStatusCode: string,
+  checkBy?: 'optional',
 ): ParamSchema => ({
   in: [where],
-  isString: { errorMessage: subStatusCode },
-  notEmpty: { errorMessage: subStatusCode },
+  isString: checkBy === 'optional' ? false : { errorMessage: subStatusCode },
+  notEmpty: checkBy === 'optional' ? false : { errorMessage: subStatusCode },
   custom: {
     options: (value) => {
       if (!allowedValues.includes(value)) throw new Error(subStatusCode); // Invalid enum value
+      return true;
+    },
+  },
+});
+
+export const VALIDATION_PRODUCT_ID = (where: Location): ParamSchema => ({
+  in: [where],
+  isString: { errorMessage: '1080' },
+  custom: {
+    options: async (value, { req, location, path }) => {
+      const activity = await getProductById(value);
+      if (!activity) throw new Error('1080');
+      return true;
+    },
+  },
+});
+
+export const VALIDATION_OBJECT = (where: Location, errorMessage: string, checkBy?: 'optional') => ({
+  in: [where],
+  notEmpty: checkBy === 'optional' ? false : { errorMessage },
+  optional: checkBy === 'optional',
+  custom: {
+    options: (value: any) => {
+      try {
+        if (typeof value === 'string') {
+          // Attempt to parse the string as JSON
+          const parsed = JSON.parse(value);
+          if (typeof parsed === 'object' && parsed !== null) {
+            return true;
+          }
+        } else if (typeof value === 'object' && value !== null) {
+          // Value is already an object
+          return true;
+        }
+        throw new Error();
+      } catch (error) {
+        throw new Error(errorMessage);
+      }
+    },
+  },
+  errorMessage,
+});
+
+export const VALIDATION_PRODUCT_NAME = (where: Location, errorMessage: string): ParamSchema => ({
+  in: [where],
+  isString: { errorMessage },
+  custom: {
+    options: async (value, { req, location, path }) => {
+      const activity = await getProductByName(value);
+      if (!activity) throw new Error(errorMessage);
       return true;
     },
   },
