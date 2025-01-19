@@ -13,3 +13,11 @@ yarn.lock
 
 /coverage
 .env.dev
+__tests__/server.test.ts
+__tests__/routes/admin.test.ts
+__tests__/routes/club.test.ts
+__tests__/routes/clubmember.test.ts
+__tests__/routes/company.test.ts
+__tests__/routes/profile.test.ts
+__tests__/routes/superadmin.test.ts
+__tests__/routes/user.auth.test.ts
