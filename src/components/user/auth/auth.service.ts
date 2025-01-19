@@ -1,22 +1,10 @@
-import {
-  badImplementationException,
-  dataNotExistException,
-  HttpException,
-  invalidException,
-} from '../../../utils/apiErrorHandler';
-import { v4 as uuidv4 } from 'uuid';
-import { getAddToCurrentJST } from '../../../utils/dayjs';
 import { MESSAGE_SEND_OTP } from './auth.message';
-import { NewOtpDocument, NewTokenDocument, NewUserDocument, UserDocument } from '../../../models/@types';
+import { NewOtpDocument, NewUserDocument } from '../../../models/@types';
 // import { addToken, deleteToken, getTokenByID } from '../../../models/token';
-import { updateUserFields, getUserByEmail, addUser } from '../../../models/user';
-import { sendMessage } from '../../../utils/sgMailer';
+import {  getUserByEmail, addUser } from '../../../models/user';
 import { sentMail } from '../../../utils/nodemailer';
-import { getRandomId } from '../../../utils/getRandom';
 import { generatedId, randomNumber } from '../../../utils/randomId';
 import { addOtp, deleteOtp } from '../../../models/otp';
-import { Users } from '../../../models/user/user.entity';
-import { encodeJwt } from '../../../utils/jwt';
 
 export const processLogin = async (email: string) => {
   try {
