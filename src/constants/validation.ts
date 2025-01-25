@@ -291,3 +291,14 @@ export const VALIDATION_PRODUCT_NAME = (where: Location, errorMessage: string): 
     },
   },
 });
+
+export const VALIDATION_USER_TYPE = (where: Location): ParamSchema => ({
+  in: [where],
+  isIn: {
+    options: [['us', 'ad']], // Enum values for userType
+    errorMessage: '1010', // Error code for invalid userType
+  },
+  notEmpty: {
+    errorMessage: '1001', // Error code for empty field
+  },
+});
