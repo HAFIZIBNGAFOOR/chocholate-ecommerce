@@ -17,7 +17,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     console.log(email);
     // Call the service
     if (userType == 'us') await service.userLogin(email);
-    await service.adminLogin(email);
+    else await service.adminLogin(email);
     return handleResponse(res, 200, { success: true, message: 'OTP have send successfully to registered email' });
   } catch (err) {
     console.error(err);
