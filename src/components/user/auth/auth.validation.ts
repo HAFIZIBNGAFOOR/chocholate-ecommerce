@@ -1,5 +1,5 @@
 import { Schema } from 'express-validator';
-import { VALIDATION_EMAIL, VALIDATION_EMAIL_OTP, VALIDATION_OTP } from '../../../constants/validation';
+import { VALIDATION_EMAIL, VALIDATION_EMAIL_OTP, VALIDATION_OTP, VALIDATION_USER_TYPE } from '../../../constants/validation';
 
 export const VERIFY_OTP_SCHEMA: Schema = {
   email: VALIDATION_EMAIL_OTP('body'),
@@ -23,4 +23,5 @@ export const VERIFY_OTP_SCHEMA: Schema = {
 
 export const LOGIN_SCHEMA: Schema = {
   email: VALIDATION_EMAIL('body'),
+  userType: VALIDATION_USER_TYPE('body'),
 };

@@ -2,8 +2,19 @@ import mongoose from 'mongoose';
 
 const CartSchema = new mongoose.Schema(
   {
-    userId: { type: String, required: true, unique: true },
-    items: [{ type: { productId: { type: String }, quantity: { type: Number } } }],
+    cartId: { type: String, required: true },
+    userId: { type: String, required: true },
+    items: [
+      {
+        type: {
+          productId: { type: String },
+          quantity: { type: Number },
+          price: { type: Number }, // Add price for each product
+          totalPrice: { type: Number },
+        },
+      },
+    ],
+    totalPrice: { type: Number, required: true },
   },
   { timestamps: true },
 );

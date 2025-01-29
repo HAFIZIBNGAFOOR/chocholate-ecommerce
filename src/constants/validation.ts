@@ -247,6 +247,7 @@ export const VALIDATION_PRODUCT_ID = (where: Location): ParamSchema => ({
   isString: { errorMessage: '1080' },
   custom: {
     options: async (value, { req, location, path }) => {
+      console.log(value);
       const activity = await getProductById(value);
       if (!activity) throw new Error('1080');
       return true;
@@ -289,5 +290,16 @@ export const VALIDATION_PRODUCT_NAME = (where: Location, errorMessage: string): 
       if (!activity) throw new Error(errorMessage);
       return true;
     },
+  },
+});
+
+export const VALIDATION_USER_TYPE = (where: Location): ParamSchema => ({
+  in: [where],
+  isIn: {
+    options: [['us', 'ad']], // Enum values for userType
+    errorMessage: '1010', // Error code for invalid userType
+  },
+  notEmpty: {
+    errorMessage: '1001', // Error code for empty field
   },
 });

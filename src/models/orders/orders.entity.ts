@@ -20,7 +20,7 @@ const orderSchema = new mongoose.Schema(
       enum: ['pending', 'confirmed', 'shipped', 'delivered', 'canceled'], // Order statuses
       default: 'pending',
     },
-    paymentMethod: { type: String, enum: ['card', 'cash', 'wallet'], required: true }, // Payment method
+    paymentMethod: { type: String, enum: ['card', 'cash', 'wallet'], }, // Payment method
     address: {
       type: String,
       required: true, // Shipping address

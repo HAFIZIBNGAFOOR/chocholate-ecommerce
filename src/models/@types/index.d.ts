@@ -129,7 +129,7 @@ export type NewOrderDocument = {
   totalAmount: number; // Total amount for the order (sum of all totalItemPrice)
   discount?: number; // Overall discount applied to the order, if any
   finalAmount: number; // Total after applying discount
-  paymentMethod: 'card' | 'cash' | 'wallet'; // Payment method used
+  paymentMethod?: 'card' | 'cash' | 'wallet'; // Payment method used
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'canceled'; // Order status
   address: {
     line1: string; // Address line 1
@@ -165,3 +165,13 @@ export type NewCartDocument = {
 export type UpdateCartDocument = Partial<NewCartDocument>;
 
 export type CartDocument = mongoose.Document & NewCartDocument;
+
+
+export type OrderProducts= {
+    productId: string; // Product ID
+    name: string; // Product name
+    quantity: number; // Quantity ordered
+    price: number; // Price per unit at the time of order
+    discountedPrice?: number; // Discounted price per unit, if applicable
+    totalItemPrice: number; // Total price for the item (quantity * discountedPrice or price)
+}

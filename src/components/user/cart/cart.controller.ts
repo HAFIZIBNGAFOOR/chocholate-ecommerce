@@ -15,7 +15,7 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
   try {
     const { userId } = req.user;
     if (!userId) throw new Error('userId not exist');
-
+    console.log(req.body);
     const { productId, quantity } = req.body;
     await addItemToCart(userId, productId, quantity);
     return handleResponse(res, 200, { message: 'Item added to cart successfully.' });
@@ -33,7 +33,7 @@ export const updateCartItem = async (req: Request, res: Response, next: NextFunc
     const { userId } = req.user;
     if (!userId) throw new Error('userId not exist');
     const { productId, quantity } = req.body;
-    await updateCart(userId, { items: [{ productId, quantity }] });
+    await updateCart(userId, productId, quantity);
     return handleResponse(res, 200, { message: 'Cart item updated successfully.' });
   } catch (error) {
     console.log(error);
