@@ -35,11 +35,11 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
     const { ACCESS_TOKEN_EXPIRED_IN, REFRESH_TOKEN_EXPIRED_IN } = process.env;
     const accessToken = encodeJwt({ id: userId }, ACCESS_TOKEN_EXPIRED_IN || '1h', 'access');
     const refreshToken = encodeJwt({ id: userId }, REFRESH_TOKEN_EXPIRED_IN || '30d', 'refresh');
-
+    const user = await getUserByID(userId);
     // Update the user with the new refresh token
     await updateUserFields(userId, { refreshToken });
 
-    return handleResponse(res, 200, { accessToken, refreshToken });
+    return handleResponse(res, 200, { accessToken, refreshToken, user });
   } catch (err) {
     console.error(err);
     next(err);
