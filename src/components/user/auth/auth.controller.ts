@@ -7,7 +7,7 @@ import {
   dataNotExistException,
   unauthorizedException,
 } from '../../../utils/apiErrorHandler';
-import { getUserByID, updateUserFields } from '../../../models/user';
+import { getProfileById, getUserByID, updateUserFields } from '../../../models/user';
 import { handleResponse } from '../../../middleware/requestHandle';
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
@@ -35,9 +35,9 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
     const { ACCESS_TOKEN_EXPIRED_IN, REFRESH_TOKEN_EXPIRED_IN } = process.env;
     const accessToken = encodeJwt({ id: userId }, ACCESS_TOKEN_EXPIRED_IN || '1h', 'access');
     const refreshToken = encodeJwt({ id: userId }, REFRESH_TOKEN_EXPIRED_IN || '30d', 'refresh');
-    const user = await getUserByID(userId);
     // Update the user with the new refresh token
     await updateUserFields(userId, { refreshToken });
+    const user = await getProfileById(userId);
 
     return handleResponse(res, 200, { accessToken, refreshToken, user });
   } catch (err) {

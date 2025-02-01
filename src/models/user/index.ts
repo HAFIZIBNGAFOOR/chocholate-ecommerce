@@ -56,7 +56,12 @@ export const deleteOneUser = async (userId: string, session?: ClientSession | nu
 
 export const getProfileById = async (userId: string) => {
   try {
-    const profile = await Users.findOne({ userId }).select('-password').select('-refreshToken');
+    const profile = await Users.findOne({ userId })
+      .select('username')
+      .select('userId')
+      .select('email')
+      .select('userType')
+      .select('profileImage');
     return Promise.resolve(profile);
   } catch (err) {
     return Promise.reject(err);
