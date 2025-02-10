@@ -5,6 +5,7 @@ import { getUserByEmail, addUser } from '../../../models/user';
 import { sentMail } from '../../../utils/nodemailer';
 import { generatedId, randomNumber } from '../../../utils/randomId';
 import { addOtp, deleteOtp } from '../../../models/otp';
+import { badImplementationException, invalidException } from '../../../utils/apiErrorHandler';
 
 export const userLogin = async (email: string) => {
   try {
@@ -29,13 +30,10 @@ export const userLogin = async (email: string) => {
 
 export const adminLogin = async (email: string) => {
   try {
-    const admin = await getUserByEmail(email);
-    if (!admin) throw Error('1110');
-    if (admin.userType !== 'ad') throw Error('1111');
     const otpDoc: NewOtpDocument = {
       otpId: generatedId(),
       email,
-      userId: admin.userId,
+      userId: null,
       otp: Number(randomNumber(6, 'numeric')),
       expiredAt: new Date(Date.now() + 5 * 60 * 1000),
     };
@@ -44,7 +42,8 @@ export const adminLogin = async (email: string) => {
     await sentMail(MESSAGE_SEND_OTP(email, otpDoc.otp)); // Sends OTP to user's email
   } catch (error) {
     console.error(error);
-    throw new Error('Error during login process.');
+    invalidException(error, '1111');
+    return Promise.reject(error);
   }
 };
 
