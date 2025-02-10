@@ -5,22 +5,25 @@ import * as service from './auth.service';
 import {
   badImplementationException,
   dataNotExistException,
+  invalidException,
   unauthorizedException,
 } from '../../../utils/apiErrorHandler';
-import { getProfileById, getUserByID, updateUserFields } from '../../../models/user';
+import { getProfileById, getUserByEmail, getUserByID, updateUserFields } from '../../../models/user';
 import { handleResponse } from '../../../middleware/requestHandle';
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req.body);
     const { email, userType } = req.body;
-    console.log(email);
     // Call the service
     if (userType == 'us') await service.userLogin(email);
-    else await service.adminLogin(email);
+    else {
+      const admin = await getUserByEmail(email);
+      if (!admin) throw invalidException('no user found','1110');
+      if (admin.userType !== 'ad') throw invalidException('not an admin','1111');
+      await service.adminLogin(email);
+    }
     return handleResponse(res, 200, { success: true, message: 'OTP have send successfully to registered email' });
   } catch (err) {
-    console.error(err);
     next(err);
   }
 };
@@ -41,7 +44,6 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
 
     return handleResponse(res, 200, { accessToken, refreshToken, user });
   } catch (err) {
-    console.error(err);
     next(err);
   }
 };
