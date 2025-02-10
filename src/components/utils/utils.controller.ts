@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { badImplementationException } from '../../../utils/apiErrorHandler';
-import { handleResponse } from '../../../middleware/requestHandle';
-import { uploadSignedUrl } from '../../../utils/s3service';
-import { FilePathDocument } from '../../../models/@types';
+import { badImplementationException } from '../../utils/apiErrorHandler';
+import { handleResponse } from '../../middleware/requestHandle';
+import { uploadSignedUrl } from '../../utils/s3service';
+import { FilePathDocument } from '../../models/@types';
 
 const BucketFolder = process.env.BUCKET_FOLDER;
 
