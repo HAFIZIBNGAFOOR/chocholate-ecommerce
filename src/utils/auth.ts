@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { unauthorizedException } from './apiErrorHandler';
-import { decodeJwt, } from './jwt';
+import { decodeJwt } from './jwt';
 import { getUserByID, updateUserFields } from '../models/user';
 import { setAdmin, setUser } from './helper';
 // import { getAdminByID } from '../models/admin';
@@ -18,7 +18,7 @@ export const isUserAuth = async (req: Request, res: Response, next: NextFunction
 
     const user = await getUserByID(decoded.payload.id);
     if (!user) throw unauthorizedException('User is not exist');
-    if (user.userType!=='us') throw unauthorizedException('1017');
+    if (user.userType !== 'us') throw unauthorizedException('1017');
     if (user.status !== 'active' || user.deletedAt !== null) throw new Error('1016');
 
     req.user = setUser(user);
@@ -193,3 +193,23 @@ export const isUserAuth = async (req: Request, res: Response, next: NextFunction
 //     console.log(error);
 //   }
 // };
+
+export const isAuth = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const bearer = req.headers['authorization'];
+    if (!bearer) throw unauthorizedException('No token provided');
+
+    const token = bearer.split(' ')[1];
+    const decoded = decodeJwt(token, 'access');
+
+    const user = await getUserByID(decoded.payload.id);
+    if (!user) throw unauthorizedException('User is not exist');
+    if (user.status !== 'active' || user.deletedAt !== null) throw new Error('1016');
+
+    req.user = setUser(user);
+    next();
+  } catch (err) {
+    console.warn(err);
+    next(err);
+  }
+};
