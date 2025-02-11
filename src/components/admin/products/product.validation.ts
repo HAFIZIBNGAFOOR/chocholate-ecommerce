@@ -56,9 +56,6 @@ export const PRODUCT_ID_SCHEMA: Schema = {
 };
 
 export const FILTER_SCHEMA: Schema = {
-  keyword: VALIDATION_STRING('query', 'Keyword must be a valid string', 'optional'),
-  category: VALIDATION_STRING('query', 'Category must be a valid string', 'optional'),
-  sortBy: VALIDATION_OBJECT('query', ''),
   limit: VALIDATION_STRING('query', '1023'),
   page: VALIDATION_STRING('query', '1024'),
 };

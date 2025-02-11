@@ -27,7 +27,11 @@ export const updateProduct = async (
 
 export const getProductById = async (productId: string) => {
   try {
-    const product = await Product.findOne({ productId });
+    const product = await Product.findOne({ productId })
+      .select('-updatedAt')
+      .select('-createdAt')
+      .select('-__v')
+      .select('-id');
     return Promise.resolve(product);
   } catch (error) {
     return Promise.reject(error);
@@ -93,7 +97,7 @@ export const updateProductsStock = async (products: OrderProducts[], session?: C
     if (bulkOperations.length > 0) {
       await Product.bulkWrite(bulkOperations, { session });
     }
-    return 
+    return;
   } catch (error) {
     return Promise.reject(error);
   }

@@ -258,7 +258,7 @@ export const VALIDATION_PRODUCT_ID = (where: Location): ParamSchema => ({
 export const VALIDATION_OBJECT = (where: Location, errorMessage: string, checkBy?: 'optional') => ({
   in: [where],
   notEmpty: checkBy === 'optional' ? false : { errorMessage },
-  optional: checkBy === 'optional',
+  optional: checkBy === 'optional'? false : { errorMessage },
   custom: {
     options: (value: any) => {
       try {
