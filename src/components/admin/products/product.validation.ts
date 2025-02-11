@@ -32,7 +32,7 @@ export const ADD_PRODUCT_SCHEMA: Schema = {
 };
 
 export const UPDATE_PRODUCT_SCHEMA: Schema = {
-  productId: VALIDATION_PRODUCT_ID('params'),
+  productId: VALIDATION_PRODUCT_ID('query'),
   name: VALIDATION_STRING('body', '1002', 'optional'),
   description: VALIDATION_STRING('body', '1003', 'optional'),
   category: VALIDATION_STRING('body', '1004', 'optional'),
@@ -52,7 +52,7 @@ export const UPDATE_PRODUCT_SCHEMA: Schema = {
 };
 
 export const PRODUCT_ID_SCHEMA: Schema = {
-  productId: VALIDATION_PRODUCT_ID('params'),
+  productId: VALIDATION_PRODUCT_ID('query'),
 };
 
 export const FILTER_SCHEMA: Schema = {
