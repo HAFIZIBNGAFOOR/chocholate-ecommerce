@@ -286,8 +286,8 @@ export const VALIDATION_PRODUCT_NAME = (where: Location, errorMessage: string): 
   isString: { errorMessage },
   custom: {
     options: async (value, { req, location, path }) => {
-      const activity = await getProductByName(value);
-      if (!activity) throw new Error(errorMessage);
+      const product = await getProductByName(value);
+      if (product) throw new Error('1095');
       return true;
     },
   },
