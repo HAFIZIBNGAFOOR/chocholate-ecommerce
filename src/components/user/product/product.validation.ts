@@ -7,5 +7,5 @@ export const FILTER_SCHEMA: Schema = {
 };
 
 export const PRODUCT_ID_SCHEMA: Schema = {
-  productId: VALIDATION_PRODUCT_ID('query'),
+  productId: VALIDATION_PRODUCT_ID('params'),
 };

@@ -5,7 +5,6 @@ import { getProductById, getProducts } from '../../../models/product';
 export const getProductsByFilter = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { page, limit, keyword, sortBy, category } = req.query;
-    console.log(req.query);
     // Build filter criteria
     const filter: any = {
       name: { $regex: keyword, $options: 'i' },

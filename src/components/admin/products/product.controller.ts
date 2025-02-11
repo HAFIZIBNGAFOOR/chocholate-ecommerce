@@ -69,17 +69,19 @@ export const getProductByID = async (req: Request, res: Response, next: NextFunc
 
 export const getProductsByFilter = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { page , limit, keyword , sortBy, category , } = req.query;
-    console.log(req.query);
+    const { page, limit, keyword, sortBy, category } = req.query;
     // Build filter criteria
+    let sort;
+    if (!sortBy) sort = { createdAt: -1 };
+    else sort = sortBy;
     const filter: any = {
-      name: { $regex: keyword, $options: 'i' }, 
+      name: { $regex: keyword, $options: 'i' },
     };
 
     if (category) filter.category = category;
 
     // Fetch products with pagination, filtering, and sorting
-    const products = await service.getProducts(filter, parseInt(page as string), parseInt(limit as string), sortBy);
+    const products = await service.getProducts(filter, parseInt(page as string), parseInt(limit as string), sort);
 
     handleResponse(res, 200, { products });
   } catch (error) {
