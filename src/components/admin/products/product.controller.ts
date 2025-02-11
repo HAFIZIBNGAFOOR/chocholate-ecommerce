@@ -4,6 +4,7 @@ import { generatedId } from '../../../utils/randomId';
 import { getProductById, saveProduct, updateProduct } from '../../../models/product';
 import { handleResponse } from '../../../middleware/requestHandle';
 import * as service from './product.service';
+import { invalidException, unauthorizedException } from '../../../utils/apiErrorHandler';
 
 export const addProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -32,7 +33,8 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
 
 export const updatesProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { productId } = req.params;
+    const { productId } = req.query;
+    if (productId) throw invalidException('product Id not found', '2009');
     const { name, description, category, price, discount, stock, weight, ingredients, images } = req.body;
     const prodDoc: UpdateProductDocument = {
       productId: generatedId(),
@@ -48,7 +50,7 @@ export const updatesProduct = async (req: Request, res: Response, next: NextFunc
       isFeatured: false,
       status: stock !== 0 ? 'available' : 'out-of-stock',
     };
-    await updateProduct(productId, prodDoc);
+    await updateProduct(productId as string, prodDoc);
     handleResponse(res, 200, {});
   } catch (error) {
     console.log(error);
@@ -58,8 +60,10 @@ export const updatesProduct = async (req: Request, res: Response, next: NextFunc
 
 export const getProductByID = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { productId } = req.params;
-    const product = await getProductById(productId);
+    const { productId } = req.query;
+    if (productId) throw invalidException('product Id not found', '2009');
+
+    const product = await getProductById(productId as string);
     handleResponse(res, 200, { product });
   } catch (error) {
     console.log(error);

@@ -1,6 +1,7 @@
 import { handleResponse } from '../../../middleware/requestHandle';
 import { NextFunction, Request, Response } from 'express';
 import { getProductById, getProducts } from '../../../models/product';
+import { invalidException } from '../../../utils/apiErrorHandler';
 
 export const getProductsByFilter = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -24,8 +25,9 @@ export const getProductsByFilter = async (req: Request, res: Response, next: Nex
 
 export const getSingleProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { productId } = req.params;
-    const product = await getProductById(productId);
+    const { productId } = req.query;
+    if (!productId) throw invalidException('product Id not found', '2009');
+    const product = await getProductById(productId as string);
     handleResponse(res, 200, { product });
   } catch (error) {
     console.log(error);
