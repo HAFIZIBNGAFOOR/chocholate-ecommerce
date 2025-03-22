@@ -18,7 +18,7 @@ export const getSignedUrl = async (req: Request, res: Response, next: NextFuncti
         async (item: FilePathDocument): Promise<object> => ({
           fileName: item.fileName,
           contentType: item.contentType,
-          imgUrl: `https://fixchocolate.s3.${process.env.AWS_REGION}.amazonaws.com/${BucketFolder}/${userId}/${item.fileName}`,
+          imgUrl: `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${BucketFolder}/${userId}/${item.fileName}`,
           signedUrl: await uploadSignedUrl(userId, item.fileName, item.contentType),
         }),
       ),

@@ -27,11 +27,13 @@ export const updateProduct = async (
 
 export const getProductById = async (productId: string) => {
   try {
+    console.log('reahed prod')
     const product = await Product.findOne({ productId })
-      .select('-updatedAt')
-      .select('-createdAt')
-      .select('-__v')
-      .select('-id');
+      // .select('-updatedAt')
+      // .select('-createdAt')
+      // .select('-__v')
+      // .select('-id');
+      console.log('reahed prod', product)
     return Promise.resolve(product);
   } catch (error) {
     return Promise.reject(error);
@@ -52,7 +54,7 @@ export const getProducts = async (filter: any = {}, page: number = 1, limit: num
       page,
       limit,
       sort: sortBy, // Sorting based on query parameter (e.g., { price: -1 })
-      select: 'productId name description category price stock nutritionInfo ingredients images',
+      // select: 'productId name description category price stock nutritionInfo ingredients images',
     };
     const products = await Product.paginate(filter, options);
 

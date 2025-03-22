@@ -36,7 +36,7 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
 
     // Generate access and refresh tokens
     const { ACCESS_TOKEN_EXPIRED_IN, REFRESH_TOKEN_EXPIRED_IN } = process.env;
-    const accessToken = encodeJwt({ id: userId }, ACCESS_TOKEN_EXPIRED_IN || '1h', 'access');
+    const accessToken = encodeJwt({ id: userId }, ACCESS_TOKEN_EXPIRED_IN || '7d', 'access');
     const refreshToken = encodeJwt({ id: userId }, REFRESH_TOKEN_EXPIRED_IN || '30d', 'refresh');
     // Update the user with the new refresh token
     await updateUserFields(userId, { refreshToken });
@@ -82,7 +82,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
     const { ACCESS_TOKEN_EXPIRED_IN, REFRESH_TOKEN_EXPIRED_IN } = process.env;
 
     //Generate accessToken and refreshToken.
-    const accessToken = encodeJwt({ id: user.userId }, ACCESS_TOKEN_EXPIRED_IN || '5m', 'access');
+    const accessToken = encodeJwt({ id: user.userId }, ACCESS_TOKEN_EXPIRED_IN || '7d', 'access');
     const newRefreshToken = encodeJwt({ id: user.userId }, REFRESH_TOKEN_EXPIRED_IN || '30d', 'refresh');
 
     //Update user Collection with new refresh token.

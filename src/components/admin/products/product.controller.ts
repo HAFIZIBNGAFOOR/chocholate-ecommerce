@@ -8,7 +8,7 @@ import { invalidException, unauthorizedException } from '../../../utils/apiError
 
 export const addProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, description, category, price, discount, stock, weight, ingredients, images } = req.body;
+    const { name, description, category, price, discount, stock, weight, ingredients, images,nutritionInfo } = req.body;
     const prodDoc: NewProductDocument = {
       productId: generatedId(),
       name,
@@ -20,6 +20,7 @@ export const addProduct = async (req: Request, res: Response, next: NextFunction
       weight,
       ingredients,
       images,
+      nutritionInfo,
       isFeatured: false,
       status: 'available',
     };
@@ -35,7 +36,7 @@ export const updatesProduct = async (req: Request, res: Response, next: NextFunc
   try {
     const { productId } = req.query;
     if (productId) throw invalidException('product Id not found', '2009');
-    const { name, description, category, price, discount, stock, weight, ingredients, images } = req.body;
+    const { name, description, category, price, discount, stock, weight, ingredients, images,nutritionInfo } = req.body;
     const prodDoc: UpdateProductDocument = {
       productId: generatedId(),
       name,
@@ -47,6 +48,7 @@ export const updatesProduct = async (req: Request, res: Response, next: NextFunc
       weight,
       ingredients,
       images,
+      nutritionInfo,
       isFeatured: false,
       status: stock !== 0 ? 'available' : 'out-of-stock',
     };
@@ -61,7 +63,7 @@ export const updatesProduct = async (req: Request, res: Response, next: NextFunc
 export const getProductByID = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { productId } = req.query;
-    if (productId) throw invalidException('product Id not found', '2009');
+    if (!productId) throw invalidException('product Id not found', '2009');
 
     const product = await getProductById(productId as string);
     handleResponse(res, 200, { product });
